@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>angular dynamic filter</title>
+	<link rel="stylesheet" href="app.css">
+</head>
+<body ng-app="myfilter">
+	<div class="wrapbox" ng-controller="myController">
+        <!-- Start Header -->
+        <header class="header">
+          <div class="container">
+            <nav class="navbar row">
+              <h1 class="app-title"> 
+              		设置金额单位为亿元：
+	                <label class="toggle toggle-balanced">
+	                    <input type="checkbox" ng-checked="billionUnit" ng-model="billionUnit" ng-change="setUnit()">
+	                    <div class="track">
+	                        <div class="handle"></div>
+	                    </div>
+	                </label>
+	              <!-- <label>{{ appTitle }}</label>  -->
+              </h1>
+            </nav>
+          </div>
+        </header>
+
+	<section class="maincontent">
+		<div class="box-total">
+			<div class="container">
+				
+				<h2>￥{{d.total | unitFormat:sumUnit }}{{sumUnit}}</h2>
+				<p>
+					<span>统计时间：<em><i ng-if="d.startTime">{{d.startTime | date:'MM/dd'}}~</i>{{d.updateTime | date:'MM/dd HH:mm'}}</em></span>
+				</p>
+				
+				<div class="total-progress" ng-if="metric>=1 && showProgress">
+					<span>完成：<i class="{{ getRatio()>=100?'bar-ratio-green':'bar-ratio-red' }}">{{ getRatio() }}% </i></span>
+					<div class="bar-progress{{ getRatio()>=100?' bar-progress-green':' bar-progress-red' }}">
+						<i class="bar-progress-tag" style="{{ 'left:'+(getRatio()>=100?100:getRatio())+'%;' }}"></i>
+						<div class="bar-progress-finished" style="{{'width:'+(getRatio()>=100?100:getRatio())+'%;'}}"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+
+		<!-- <div class="container box-list">
+			<div class="appbox">
+				<div ng-repeat="data in d.applist" class="itembox">
+					<app-widget app-data="data" year="d.year" sum-unit="sumUnit"></app-widget>
+				</div>
+			</div>
+		</div> -->
+		<div class="container box-list">
+		<div class="appbox">
+			<div ng-repeat="appData in d.applist" class="itembox">
+				<dl class="box-group">
+					<dt>
+						<i class="glyphicon {{iconClass[appData.businessId]}}" ng-if="appData.icon==''"></i>
+						<i class="glyphicon" ng-if="appData.icon!==''">
+							<img src="{{appData.icon}}" />
+						</i>
+
+						<label>{{appData.businessName}}</label>
+					</dt>
+					<dd ng-repeat="item in appData.items">
+						<a ng-if="item.hasChildNode" class="bg_arrow">
+							<div class="app-item">
+								<label>{{item.itemName}}</label>
+								<em ng-if="item.unit=='元'">{{item.itemData | unitFormat:sumUnit }}{{sumUnit}}</em>
+								<em ng-if="item.unit!='元'">{{item.itemData | number }}{{item.unit}}</em>
+							</div>
+							<div class="app-item" ng-if="item.showProgress">
+								<span><label>完成：</label><i class="{{ getRatio(item.itemData,item.goal)>=100?'bar-ratio-green':'bar-ratio-red' }}">{{ getPercent(item.itemData,item.goal) }}% </i></span>
+								<div class="bar-progress{{ getRatio(item.itemData,item.goal)>=100?' bar-progress-green':' bar-progress-red' }}">
+									<i class="bar-progress-tag" style="{{ 'left:'+getRatio(item.itemData,item.goal)+'%;' }}"></i>
+									<div class="bar-progress-finished" style="{{ 'width:'+getRatio(item.itemData,item.goal)+'%;' }}"></div>
+								</div>
+							</div>
+							<div class="app-item i-date"><label>更新时间</label><em>{{item.updateTime | date:'yyyy/MM/dd HH:mm:ss'}}</em></div>
+						</a>
+						<a ng-if="!item.hasChildNode">
+							<div class="app-item">
+								<label>{{item.itemName}}</label>
+								<em ng-if="item.unit=='元'">{{item.itemData | unitFormat:sumUnit }}{{sumUnit}}</em>
+								<em ng-if="item.unit!='元'">{{item.itemData | number }}{{item.unit}}</em>
+							</div>
+							<div class="app-item" ng-if="item.showProgress">
+								<span><label>完成：</label><i class="{{ getRatio(item.itemData,item.goal)>=100?'bar-ratio-green':'bar-ratio-red' }}">{{ getRatio(item.itemData,item.goal) }}% </i></span>
+								<div class="bar-progress{{ getRatio(item.itemData,item.goal)>=100?' bar-progress-green':' bar-progress-red' }}">
+									<i class="bar-progress-tag" style="{{ 'left:'+getRatio(item.itemData,item.goal)+'%;' }}"></i>
+									<div class="bar-progress-finished" style="{{ 'width:'+getRatio(item.itemData,item.goal)+'%;' }}"></div>
+								</div>
+							</div>
+							<div class="app-item i-date"><label>更新时间</label><em>{{item.updateTime | date:'yyyy/MM/dd HH:mm:ss'}}</em></div>
+						</a>
+					</dd>
+				</dl>
+			</div>
+		</div>
+		</div>
+    </section>
+
+
+
+	</div>
+	<script src="vendor/angular.min.js" type="text/javascript"></script>
+	<script src="vendor/angular-sanitize.min.js" type="text/javascript"></script>
+	<script src="app.js" type="text/javascript"></script>
+	<!-- <script src="directive/directive.js" type="text/javascript"></script> -->
+</body>
+</html>
